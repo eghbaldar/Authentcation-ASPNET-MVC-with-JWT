@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Set Token";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+<script>
+    // Dummy credentials for testing
+    const loginData = {
+        username: "admin",
+        password: "1234"
+    };
+    fetch('/auth/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(loginData)
+    });
+</script>
