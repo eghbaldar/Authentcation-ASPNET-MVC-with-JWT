@@ -1,6 +1,7 @@
 using JWT.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -8,23 +9,29 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//NOTE: This binds your JwtSettings model with the values from appsettings.json, making it injectable via IOptions<JwtSettings>.
+//NOTE: By using builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));, you're binding the JwtSettings section of your configuration file (appsettings.json) to a strongly typed object (JwtSettings). This means that in your application, you can inject IOptions<JwtSettings> and access the values directly.
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
 // Configure Authentication
+//NOTE: our project is=> MVC App + API with JWT (Hybrid)
+var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 })
-.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options => // for MVC or Razor Pages
 {
     options.LoginPath = "/Auth/Login";
     options.LogoutPath = "/Auth/Logout";
     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
     options.SlidingExpiration = true;
     options.Cookie.HttpOnly = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // Use Always for production
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
     options.Cookie.SameSite = SameSiteMode.Strict;
     options.Cookie.Name = "UserAuthCookie";
     options.Cookie.MaxAge = TimeSpan.FromDays(7);
@@ -33,7 +40,6 @@ builder.Services.AddAuthentication(options =>
         OnRedirectToLogin = context =>
         {
             // Return 401 for AJAX requests
-            //  || context.Request.Accept.Contains("application/json")
             if (context.Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
                 context.Response.StatusCode = 401;
@@ -44,9 +50,9 @@ builder.Services.AddAuthentication(options =>
             context.Response.Redirect(context.RedirectUri);
             return Task.CompletedTask;
         }
-    };
+    };  
 })
-.AddJwtBearer(options =>
+.AddJwtBearer(options => // for API calls
 {
     options.RequireHttpsMetadata = false;
     options.SaveToken = true;
@@ -56,9 +62,9 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("YourSuperSecretKeyHere_1234567890YourSuperSecretKeyHere_1234567890")),
-        ValidIssuer = "YourApp",
-        ValidAudience = "YourAppUsers"
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Key)),
+        ValidIssuer = jwtSettings.Issuer,
+        ValidAudience = jwtSettings.Audience
     };
     options.Events = new JwtBearerEvents
     {

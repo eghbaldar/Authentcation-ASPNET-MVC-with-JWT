@@ -11,7 +11,20 @@ using System.Text;
 
 public class AuthController : Controller
 {
+    /// <summary>
+    /// //////////////////////////////////////////////////////////////////
+    /// In your current code, the refreshTokens dictionary is being used to temporarily map each refresh token to a username. 
+    /// The dictionary stores this data only for the duration that the application is running. Here's a breakdown:
+    /// In production, this dictionary-based store is not persistent. If the server restarts, the tokens are lost.
+    /// but...
+    /// ⚠️ In A Real-World 
+    //////// Store in database.
+    //////// Use distributed cache like Redis.
+    //////// Add expiration timestamps to refresh tokens.
+    /// </summary>
     private static Dictionary<string, string> refreshTokens = new(); // refreshToken -> username
+    //////////////////////////////////////////////////////////////////////
+    
 
     private readonly JwtSettings _jwtSettings;
 
@@ -51,6 +64,8 @@ public class AuthController : Controller
 
             // Generate the Refresh Token (can be a simple GUID or more complex)
             var refreshToken = Guid.NewGuid().ToString();
+            // Store refresh token in memory (map to username)
+            refreshTokens[refreshToken] = model.Username;
 
             // Store the refresh token in an HTTP-only cookie (server-side)
             Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
@@ -68,10 +83,6 @@ public class AuthController : Controller
                 SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes)
             });
-
-            // Store refresh token in memory (map to username)
-            refreshTokens[refreshToken] = model.Username;
-
 
             // Create claims for cookie auth
             var claims = new[]
@@ -94,10 +105,8 @@ public class AuthController : Controller
                 principal,
                 authProperties
             );
-
             return Ok(new { token = accessTokenString });
         }
-
         return Unauthorized();
     }
 
@@ -116,9 +125,9 @@ public class AuthController : Controller
 
         var claims = new[]
         {
-        new Claim(ClaimTypes.Name, username),
-        new Claim(ClaimTypes.Role, "Admin") // Optional: could be fetched from DB
-    };
+            new Claim(ClaimTypes.Name, username),
+            new Claim(ClaimTypes.Role, "Admin") // Optional: could be fetched from DB
+        };
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);

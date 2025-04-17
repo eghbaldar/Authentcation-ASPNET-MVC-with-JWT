@@ -519,11 +519,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Kinh\\Desktop\\JWT\\JWT.csproj",
+      "projectUniqueName": "D:\\_PROJECT_\\JWT\\JWT.csproj",
       "projectName": "JWT",
-      "projectPath": "C:\\Users\\Kinh\\Desktop\\JWT\\JWT.csproj",
+      "projectPath": "D:\\_PROJECT_\\JWT\\JWT.csproj",
       "packagesPath": "C:\\Users\\Kinh\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Kinh\\Desktop\\JWT\\obj\\",
+      "outputPath": "D:\\_PROJECT_\\JWT\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "d:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

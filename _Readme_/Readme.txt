@@ -36,3 +36,15 @@ NOTE[5]:
 
 NOTE[6]:
 The /home/king page is marked with [Authorize], which relies on the authentication scheme configured in Program.cs.
+
+NOTE[7]:
+Why do we even need RefreshToken() if we're using cookies?
+Because the browser won't auto-refresh your JWT — you must build that logic.
+
+NOTE[8]:
+⚠️ A Real-World Note
+In production, this dictionary-based store is not persistent. If the server restarts, the tokens are lost.
+🧱 Better alternatives:
+Store in database.
+Use distributed cache like Redis.
+Add expiration timestamps to refresh tokens.

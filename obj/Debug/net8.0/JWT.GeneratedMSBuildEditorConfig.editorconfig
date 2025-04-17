@@ -9,31 +9,31 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = JWT
 build_property.RootNamespace = JWT
-build_property.ProjectDir = C:\Users\Kinh\Desktop\JWT\
+build_property.ProjectDir = D:\_PROJECT_\JWT\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\Kinh\Desktop\JWT
+build_property.MSBuildProjectDirectory = D:\_PROJECT_\JWT
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/Kinh/Desktop/JWT/Views/Auth/Login.cshtml]
+[D:/_PROJECT_/JWT/Views/Auth/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Kinh/Desktop/JWT/Views/Home/Index.cshtml]
+[D:/_PROJECT_/JWT/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Kinh/Desktop/JWT/Views/Home/King.cshtml]
+[D:/_PROJECT_/JWT/Views/Home/King.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxLaW5nLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Kinh/Desktop/JWT/Views/Home/SetToken.cshtml]
+[D:/_PROJECT_/JWT/Views/Home/SetToken.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxTZXRUb2tlbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Kinh/Desktop/JWT/Views/Shared/_Layout.cshtml]
+[D:/_PROJECT_/JWT/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-nq81ariukc
