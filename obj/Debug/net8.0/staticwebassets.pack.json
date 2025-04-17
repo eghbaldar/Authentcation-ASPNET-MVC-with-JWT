@@ -5,6 +5,10 @@
       "PackagePath": "staticwebassets\\JWT.bundle.scp.css"
     },
     {
+      "Id": "D:\\_PROJECT_\\JWT\\wwwroot\\css\\login.css",
+      "PackagePath": "staticwebassets\\css\\login.css"
+    },
+    {
       "Id": "D:\\_PROJECT_\\JWT\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },
@@ -15,6 +19,10 @@
     {
       "Id": "D:\\_PROJECT_\\JWT\\wwwroot\\js\\auth.js",
       "PackagePath": "staticwebassets\\js\\auth.js"
+    },
+    {
+      "Id": "D:\\_PROJECT_\\JWT\\wwwroot\\js\\login.js",
+      "PackagePath": "staticwebassets\\js\\login.js"
     },
     {
       "Id": "D:\\_PROJECT_\\JWT\\wwwroot\\js\\site.js",

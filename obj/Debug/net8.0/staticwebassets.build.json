@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "/j8PxVQatq59ynRpevK8LRd21rpKz0dR0Vr5RuLK0P8=",
+  "Hash": "5eOx0dHUm07K/CQR3ufvuVt/pTvdNbDAsEGhMr8cL+U=",
   "Source": "JWT",
   "BasePath": "_content/JWT",
   "Mode": "Default",
@@ -53,6 +53,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "D:\\_PROJECT_\\JWT\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\JWT.bundle.scp.css"
+    },
+    {
+      "Identity": "D:\\_PROJECT_\\JWT\\wwwroot\\css\\login.css",
+      "SourceId": "JWT",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\_PROJECT_\\JWT\\wwwroot\\",
+      "BasePath": "_content/JWT",
+      "RelativePath": "css/login.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\login.css"
     },
     {
       "Identity": "D:\\_PROJECT_\\JWT\\wwwroot\\css\\site.css",
@@ -110,6 +129,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\auth.js"
+    },
+    {
+      "Identity": "D:\\_PROJECT_\\JWT\\wwwroot\\js\\login.js",
+      "SourceId": "JWT",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\_PROJECT_\\JWT\\wwwroot\\",
+      "BasePath": "_content/JWT",
+      "RelativePath": "js/login.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\login.js"
     },
     {
       "Identity": "D:\\_PROJECT_\\JWT\\wwwroot\\js\\site.js",

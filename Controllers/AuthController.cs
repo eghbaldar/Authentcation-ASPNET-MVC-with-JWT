@@ -8,12 +8,14 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using JWT.Services.Users;
+using JWT.Repository.Context;
 
 public class AuthController : Controller
 {
     /// <summary>
     /// //////////////////////////////////////////////////////////////////
-    /// In your current code, the refreshTokens dictionary is being used to temporarily map each refresh token to a username. 
+    /// In your current code, the refreshTokens dictionary is being used to temporarily map each refresh token to a Email. 
     /// The dictionary stores this data only for the duration that the application is running. Here's a breakdown:
     /// In production, this dictionary-based store is not persistent. If the server restarts, the tokens are lost.
     /// but...
@@ -22,92 +24,93 @@ public class AuthController : Controller
     //////// Use distributed cache like Redis.
     //////// Add expiration timestamps to refresh tokens.
     /// </summary>
-    private static Dictionary<string, string> refreshTokens = new(); // refreshToken -> username
-    //////////////////////////////////////////////////////////////////////
-    
-
+    private static Dictionary<string, string> refreshTokens = new(); // refreshToken -> Email
+                                                                     //////////////////////////////////////////////////////////////////////
     private readonly JwtSettings _jwtSettings;
-
-    public AuthController(IOptions<JwtSettings> jwtSettings)
+    private readonly IDataBaseContext _context;
+    public AuthController(IOptions<JwtSettings> jwtSettings, IDataBaseContext context)
     {
         _jwtSettings = jwtSettings.Value;
+        _context = context;
     }
 
     [HttpPost]
     public IActionResult Login([FromBody] UserModel model)
     {
-        // Dummy credentials check
-        if (model.Username == "admin" && model.Password == "1234")
+        // get validation of user
+        // NOTE: or use: Dummy credentials check like: model.Username == "admin" && model.Password == "1234        
+        UserService userService = new UserService(_context);
+        string userValidation = userService.UserValid(model.Email, model.Password);
+        if (string.IsNullOrEmpty(userValidation)) return Unauthorized();
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(_jwtSettings.Key);
+
+        // Generate the Access Token (JWT)
+        var accessTokenDescriptor = new SecurityTokenDescriptor
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_jwtSettings.Key);
-
-            // Generate the Access Token (JWT)
-            var accessTokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[] {
-                    new Claim(ClaimTypes.Name, model.Username),
-                    new Claim(ClaimTypes.Role, "Admin")
+            Subject = new ClaimsIdentity(new[] {
+                    new Claim(ClaimTypes.Name, model.Email),
+                    new Claim(ClaimTypes.Role, userValidation)
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
-                Issuer = _jwtSettings.Issuer,
-                Audience = _jwtSettings.Audience,
-                SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(key),
-                    SecurityAlgorithms.HmacSha256Signature)
+            Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
+            Issuer = _jwtSettings.Issuer,
+            Audience = _jwtSettings.Audience,
+            SigningCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(key),
+                SecurityAlgorithms.HmacSha256Signature)
+        };
+
+        var accessToken = tokenHandler.CreateToken(accessTokenDescriptor);
+
+        // Set the access token in a cookie (client-side)
+        var accessTokenString = tokenHandler.WriteToken(accessToken);
+
+        // Generate the Refresh Token (can be a simple GUID or more complex)
+        var refreshToken = Guid.NewGuid().ToString();
+        // Store refresh token in memory (map to username)
+        refreshTokens[refreshToken] = model.Email;
+
+        // Store the refresh token in an HTTP-only cookie (server-side)
+        Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = false, // Change to true for production
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTime.UtcNow.AddDays(30)
+        });
+
+        Response.Cookies.Append("authToken", accessTokenString, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = false, // Change to true for production
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes)
+        });
+
+        // Create claims for cookie auth
+        var claims = new[]
+        {
+                new Claim(ClaimTypes.Name, model.Email),
+                new Claim(ClaimTypes.Role, userValidation)
             };
 
-            var accessToken = tokenHandler.CreateToken(accessTokenDescriptor);
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var principal = new ClaimsPrincipal(identity);
 
-            // Set the access token in a cookie (client-side)
-            var accessTokenString = tokenHandler.WriteToken(accessToken);
+        var authProperties = new AuthenticationProperties
+        {
+            IsPersistent = true,
+            ExpiresUtc = DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes)
+        };
 
-            // Generate the Refresh Token (can be a simple GUID or more complex)
-            var refreshToken = Guid.NewGuid().ToString();
-            // Store refresh token in memory (map to username)
-            refreshTokens[refreshToken] = model.Username;
+        HttpContext.SignInAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            principal,
+            authProperties
+        );
+        return Ok(new { token = accessTokenString });
 
-            // Store the refresh token in an HTTP-only cookie (server-side)
-            Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = false, // Change to true for production
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddDays(30)
-            });
-
-            Response.Cookies.Append("authToken", accessTokenString, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = false, // Change to true for production
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes)
-            });
-
-            // Create claims for cookie auth
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.Name, model.Username),
-                new Claim(ClaimTypes.Role, "Admin")
-            };
-
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-
-            var authProperties = new AuthenticationProperties
-            {
-                IsPersistent = true,
-                ExpiresUtc = DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes)
-            };
-
-            HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                principal,
-                authProperties
-            );
-            return Ok(new { token = accessTokenString });
-        }
-        return Unauthorized();
     }
 
     [HttpPost]
@@ -115,7 +118,7 @@ public class AuthController : Controller
     {
         var refreshToken = Request.Cookies["refreshToken"];
 
-        if (string.IsNullOrEmpty(refreshToken) || !refreshTokens.TryGetValue(refreshToken, out var username))
+        if (string.IsNullOrEmpty(refreshToken) || !refreshTokens.TryGetValue(refreshToken, out var email))
         {
             return Unauthorized("Invalid or missing refresh token");
         }
@@ -125,7 +128,7 @@ public class AuthController : Controller
 
         var claims = new[]
         {
-            new Claim(ClaimTypes.Name, username),
+            new Claim(ClaimTypes.Name, email),
             new Claim(ClaimTypes.Role, "Admin") // Optional: could be fetched from DB
         };
 

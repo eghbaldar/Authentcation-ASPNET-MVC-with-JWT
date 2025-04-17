@@ -8,16 +8,30 @@ namespace JWT.Controllers
 {
     public class HomeController : Controller
     {
-        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
-        public IActionResult King()
-        {
-            return View();
-        }
         public IActionResult Index()
         {
             return View();
         }
-        public IActionResult SetToken()
+        public IActionResult Login()
+        {
+            return View();
+        }
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = "Admin")]
+        public IActionResult AdminPage()
+        {
+            return View();
+        }
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = "User")]
+        public IActionResult UserPage()
+        {
+            return View();
+        }
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        public IActionResult AllRoles()
         {
             return View();
         }

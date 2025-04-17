@@ -1,6 +1,8 @@
 using JWT.Models;
+using JWT.Repository.Context;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -10,11 +12,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// DataBaseServices
+builder.Services.AddScoped<IDataBaseContext, DataBaseContext>();
+var ConStr = builder.Configuration.GetConnectionString("Localhost");
+builder.Services.AddEntityFrameworkSqlServer().AddDbContext<DataBaseContext>(x => x.UseSqlServer(ConStr));
+
+// Configure Authentication
 //NOTE: This binds your JwtSettings model with the values from appsettings.json, making it injectable via IOptions<JwtSettings>.
 //NOTE: By using builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));, you're binding the JwtSettings section of your configuration file (appsettings.json) to a strongly typed object (JwtSettings). This means that in your application, you can inject IOptions<JwtSettings> and access the values directly.
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
-
-// Configure Authentication
 //NOTE: our project is=> MVC App + API with JWT (Hybrid)
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
 
@@ -35,6 +41,7 @@ builder.Services.AddAuthentication(options =>
     options.Cookie.SameSite = SameSiteMode.Strict;
     options.Cookie.Name = "UserAuthCookie";
     options.Cookie.MaxAge = TimeSpan.FromDays(7);
+    options.AccessDeniedPath = "/home/accessDenied"; // if logged in but no permission (roles)
     options.Events = new CookieAuthenticationEvents
     {
         OnRedirectToLogin = context =>
