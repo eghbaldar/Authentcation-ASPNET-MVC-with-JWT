@@ -1,4 +1,5 @@
-﻿using JWT.Repository.Context;
+﻿using JWT.Models;
+using JWT.Repository.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace JWT.Services.Users
@@ -10,17 +11,25 @@ namespace JWT.Services.Users
         {
             _context = context;
         }
-        public string UserValid(string email, string password)
+        public UserModel UserValid(string email, string password)
         {
-            var user = _context.Users.FirstOrDefault(x => x.Email == email && x.Password == password);
+            var user = _context.Users
+                .Select(x => new UserModel
+                {
+                    Email = x.Email,
+                    Password = x.Password,
+                    Role = x.Role,
+                    UserId = x.Id,
+                })
+                .FirstOrDefault(x => x.Email == email && x.Password == password);
             if (user != null)
-                return user.Role;
+                return user;
             else
                 return null;
         }
-        public JWT.Repository.Entities.Users FindUserByEmail(string email)
+        public JWT.Repository.Entities.Users FindUserByUserId(Guid userId)
         {
-            return _context.Users.FirstOrDefault(x => x.Email == email);
+            return _context.Users.FirstOrDefault(x => x.Id == userId);
         }
         public JWT.Repository.Entities.Users FindUserByToken(string token)
         {
