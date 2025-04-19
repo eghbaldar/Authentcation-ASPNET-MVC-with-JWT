@@ -61,12 +61,12 @@ namespace JWT.Services.Tokens
         //    _context.SaveChanges();
         //    return true;
         //}
-        //public bool DisabledUserTokenByToken(string token)
-        //{
-        //    _context.RefreshToken.Where(x => x.Token == token).First().IsRevoked = false;
-        //    _context.SaveChanges();
-        //    return true;
-        //}
+        public bool DisabledUserTokenByToken(string token)
+        {
+            _context.RefreshToken.Where(x => x.Token == token).First().IsRevoked = false;
+            _context.SaveChanges();
+            return true;
+        }
         //public bool IsRefreshTokenValid(string token)
         //{
         //    return _context.RefreshToken.Any(x => x.Token == token && x.IsRevoked && x.Expire >= DateTime.Now);

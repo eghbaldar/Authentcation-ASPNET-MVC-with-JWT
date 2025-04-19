@@ -4,5 +4,80 @@
 }
 
 <div class="text-center">
-<h1>I am the King</h1>
+    <h1>Authentcation-ASPNET-MVC-with-JWT</h1>
+    <hr />
+<div style="text-align:left;">
+        from: <a href="https://king.eghbaldar.ir">king.eghbaldar.ir</a>
+        <br />
+        source: <a href="https://github.com/eghbaldar/Authentcation-ASPNET-MVC-with-JWT" target="_blank">https://github.com/eghbaldar/Authentcation-ASPNET-MVC-with-JWT</a>
+        <br />
+        <ul>
+            <li>LOGIN: you can login to use all pages based on your roles</li>
+            <li>AdminPage: is accessible only for users whose roles are Admin in DB</li>
+            <li>UserPage: is accessible only for users whose roles are User in DB</li>
+            <li>AllRoles: is accessible for all users</li>
+            <li>AllRolesBearer: is just a controller method (API) to test Jwt-Bearer / this is not a page for returning a view the same as the AllRolesBearer cshtml</li>
+        </ul>
+        <br />
+        <h4>NOTE [1]:</h4>
+        What's a Refresh Token?
+        A Refresh Token is like the VIP backstage pass for your app's authentication system.
+        Your JWT access token is short-lived (e.g., 15–60 mins).
+        When it expires, instead of making the user log in again, you use a Refresh Token to get a new access token.
+        Frontend stores the access token in a regular cookie, accessible by JavaScript, and does not handle the refreshToken cookie.
+        <br />
+        <h4>NOTE [2]:</h4>
+        The reason you're seeing an earlier expiration time (e.g., 09:02) even though your local time is 12:33 PM is because you're using:
+        Expires = DateTimeOffset.UtcNow.AddMinutes(...)
+        DateTimeOffset.UtcNow gives the current time in UTC (not your local time).
+        <br />
+        <h4>NOTE [3]:</h4>
+        When you log in for the first time, two cookies will be created — one from the client-side (your JavaScript code) and one from the server-side (through HTTP response).
+        Here's the flow:
+        > Frontend (Client-Side) sends the login request to the backend (e.g., with username and password).
+        >Backend (Server-Side):
+        >>Validates the credentials.
+        >>Generates two tokens:
+        >>>Access token (JWT) — short-lived token for authenticating requests.
+        >>>Refresh token — long-lived token to refresh the access token when it expires.
+        >The Backend sends back the following:
+        >>Access token (in the response body) — The client (your JavaScript) will take this token and set it in a cookie named authToken.
+        >>Refresh token (in the HTTP-only cookie) — The backend will send this token to the client as an HTTP-only cookie, which JavaScript cannot access.
+        <br />
+        <h4>NOTE [4]:</h4>
+        > Cookie (authToken) is for short-lived access and can be accessed by JavaScript.
+        > Cookie (refreshToken) is for long-lived token refreshing and is stored as HTTP-only by the backend, which JavaScript cannot read.
+        >> If the access token is not expired yet, you try to visit /home/king directly in the browser (or any similar authorized page), the browser will send your cookies automatically, including authToken (access token) and refreshToken (refresh token).
+        >> If the access token is expired, the server will return 401 Unauthorized, and at this point, the browser doesn’t automatically know how to refresh the token. That’s when you need to use fetchWithRefresh to handle token refreshing and retry the request automatically.
+        <br />
+        <h4>NOTE [5]:</h4>
+        >When credentials: 'include' is set:
+        >It tells fetch() to automatically send all cookies (including refreshToken and authToken) to your backend
+        <br />
+        <h4>NOTE [6]:</h4>
+        The /home/king page is marked with [Authorize], which relies on the authentication scheme configured in Program.cs.
+        <br />
+        <h4>NOTE [7]:</h4>
+        Why do we even need RefreshToken() if we're using cookies?
+        Because the browser won't auto-refresh your JWT — you must build that logic.
+        <br />
+        <h4>NOTE [8]:</h4>
+        ⚠️ A Real-World Note
+        In production, this dictionary-based store is not persistent. If the server restarts, the tokens are lost.
+        🧱 Better alternatives:
+        Store in database.
+        Use distributed cache like Redis.
+        Add expiration timestamps to refresh tokens.
+        <br />
+        <h4>NOTE [9]:</h4>
+        using both Cookie Authentication and JWT (Bearer Token) Authentication in the same ASP.NET Core project is not only feasible, but also very wise and flexible in many scenarios.
+        in this project, we use
+        1) JWT Auth => for: /home/AllRolesBearer
+        2) Cookie Auth => for: /home/AdminPage & /home/UserPage & /home/AllRoles
+        <br />
+        <h4>NOTE [10]:</h4>
+        in your controller: return View(); // ❌ won't work properly with fetch
+        Why not return a View with JWT?
+        JWT works without cookies and doesn't integrate automatically into Razor view rendering or MVC routing. It's mainly used for API-style apps (e.g., React, Angular, Vue, or raw JS frontend).
+</div>
 </div>

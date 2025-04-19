@@ -48,3 +48,14 @@ In production, this dictionary-based store is not persistent. If the server rest
 Store in database.
 Use distributed cache like Redis.
 Add expiration timestamps to refresh tokens.
+
+NOTE[9]:
+using both Cookie Authentication and JWT (Bearer Token) Authentication in the same ASP.NET Core project is not only feasible, but also very wise and flexible in many scenarios.
+in this project, we use
+1) JWT Auth => for: /home/AllRolesBearer
+2) Cookie Auth => for: /home/AdminPage & /home/UserPage & /home/AllRoles
+
+NOTE[10]:
+in your controller: return View(); // ❌ won't work properly with fetch
+Why not return a View with JWT?
+JWT works without cookies and doesn't integrate automatically into Razor view rendering or MVC routing. It's mainly used for API-style apps (e.g., React, Angular, Vue, or raw JS frontend).

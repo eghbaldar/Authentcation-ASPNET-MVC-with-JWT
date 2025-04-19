@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using JWT.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,5 +36,14 @@ namespace JWT.Controllers
         {
             return View();
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet]
+        public IActionResult AllRolesBearer()
+        {
+            // this page is only accessible directly through TOKEN with ajax in header itself
+            // this page is not accessible with simple <a href='/home/AllRolesBearer'></a>
+            return Json(new { message = "[Test] => This page is protected by JWT Bearer" });
+        }
+
     }
 }

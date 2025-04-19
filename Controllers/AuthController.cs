@@ -242,5 +242,24 @@ public class AuthController : Controller
     {
         return View();
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Logout()
+    {        
+        // mark all user's token revoke
+        TokenService tokenService = new TokenService(_context, _configuration);
+        var refreshToken = Request.Cookies["refreshToken"];
+        tokenService.DisabledUserTokenByToken(refreshToken);
+        // Remove auth token
+        Response.Cookies.Delete("authToken");
+        // Remove refresh token
+        Response.Cookies.Delete("refreshToken");
+        // Remove ASP.NET Core cookie (if you're using cookie-based auth too)
+        Response.Cookies.Delete("UserAuthCookie"); // or ".AspNetCore.Cookies" if that's the default
+        await HttpContext.SignOutAsync(); // Logs out from all schemes
+
+        return Redirect("/"); // 🔁 redirect to your homepage or landing page
+    }
+
 }
 

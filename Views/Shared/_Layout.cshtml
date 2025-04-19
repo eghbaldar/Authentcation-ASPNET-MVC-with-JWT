@@ -12,12 +12,21 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">JWT</a>
+                <a class="navbar-brand" href="/">JWT</a>
                 <a class="navbar-brand" href="/"><span class="navbar-toggler-icon"></span></a>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="navbar-brand" href="/home/login">Login</a>
+                            @{
+                                if (User.Identity.IsAuthenticated)
+                                {
+                                    <a class="navbar-brand cursorPointer" onclick="Logout()">Logout</a>
+                                }
+                                else
+                                {
+                                    <a class="navbar-brand" href="/home/login">Login</a>
+                                }
+                            }
                         </li>
                         <li class="nav-item">
                             <a class="navbar-brand" href="/home/AdminPage">AdminPage</a>
@@ -27,6 +36,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="navbar-brand" href="/home/AllRoles">AllRoles</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="navbar-brand cursorPointer" onclick="runFunctionIsProtectedByJWT('/home/AllRolesBearer/')">AllRolesBearer</a>
                         </li>
                     </ul>
                 </div>
