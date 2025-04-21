@@ -161,3 +161,9 @@ PRs are welcome if you'd like to extend or improve this template!
 🔗 License
 MIT – Do whatever you like 😄
 
+References:
+- https://antondevtips.com/blog/authentication-and-authorization-best-practices-in-aspnetcore
+- https://learn.microsoft.com/en-us/aspnet/core/security/authentication/?view=aspnetcore-9.0
+- https://medium.com/@jeslurrahman/protect-your-net-applications-best-4-authorization-mechanisms-7065550c5fb7
+- https://stackoverflow.com/questions/75114842/asp-net-core-6-users-are-logged-out-after-30-minutes-need-6-hours
+- 
