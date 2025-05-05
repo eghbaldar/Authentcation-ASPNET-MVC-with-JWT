@@ -59,3 +59,21 @@ NOTE[10]:
 in your controller: return View(); // ❌ won't work properly with fetch
 Why not return a View with JWT?
 JWT works without cookies and doesn't integrate automatically into Razor view rendering or MVC routing. It's mainly used for API-style apps (e.g., React, Angular, Vue, or raw JS frontend).
+
+NOTE[11]:
+what's difference between those?
+options.ExpireTimeSpan = TimeSpan.FromDays(15);
+options.Cookie.MaxAge = TimeSpan.FromDays(15);
+
+> options.ExpireTimeSpan
+Belongs to: CookieAuthenticationOptions
+Purpose: Determines how long the authentication ticket (claims, identity, etc.) is valid after being issued.
+This means the user must re-authenticate after 15 days.
+
+> options.Cookie.MaxAge
+Belongs to: CookieBuilder (a sub-property of the options)
+Purpose: Sets the Max-Age attribute in the cookie itself, defining how long the browser should keep the cookie.
+Implication: If this isn't set, the cookie becomes a session cookie (deleted when the browser closes).
+This means the browser: “Keep this cookie for 15 days.”
+
+

@@ -34,7 +34,7 @@
 
             if (refreshResponse.ok) {
                 const urlParams = new URLSearchParams(window.location.search);
-                const returnUrl = urlParams.get('ReturnUrl') || '/home/king';
+                const returnUrl = urlParams.get('ReturnUrl') || '/';
                 window.location.href = decodeURIComponent(returnUrl);
             } else {
                 console.error('Token refresh failed:', await refreshResponse.text());

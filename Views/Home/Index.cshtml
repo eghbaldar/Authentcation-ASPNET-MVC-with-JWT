@@ -17,7 +17,26 @@
             <li>UserPage: is accessible only for users whose roles are User in DB</li>
             <li>AllRoles: is accessible for all users</li>
             <li>AllRolesBearer: is just a controller method (API) to test Jwt-Bearer / this is not a page for returning a view the same as the AllRolesBearer cshtml</li>
+            <li>Api-Jwt: is not a page, it is a anchor link to fetch the data from /home/GetProtectedData, only if you are authenticated!</li>
         </ul>
+        <hr/>
+        <h1>How to setup this project?</h1>
+        <ul>
+            <li>update-database via [PMC] to create database and the project entities on MSSQL
+                <br/>
+                <img src="./imgs/database.png" />
+            </li>
+            <li>insert two records in [Users] entities, like:
+                <ul>
+                    <li> 74168a75-3af0-4bcc-b8d2-16336afecfcb, Eghbaldar , ali@@gmail.com , 1234 , Admin</li>
+                    <li> 74168a75-3af0-4bcc-b8d2-16335afecfcb, Keyhani , keyhan@@gamil.com , 1234 , User</li>
+                </ul>
+                <img src="./imgs/users.png"/>
+            </li>
+            <li>Run the project & enjoy it!</li>
+        </ul>
+        <hr/>
+        <h1>Guidance:</h1>
         <br />
         <h4>NOTE [1]:</h4>
         What's a Refresh Token?
@@ -55,7 +74,7 @@
         >It tells fetch() to automatically send all cookies (including refreshToken and authToken) to your backend
         <br />
         <h4>NOTE [6]:</h4>
-        The /home/king page is marked with [Authorize], which relies on the authentication scheme configured in Program.cs.
+        The most of <span class="red">Home Controller Pages</span> are marked with [Authorize], which relies on the JwtAuthentication scheme configured in Program.cs.
         <br />
         <h4>NOTE [7]:</h4>
         Why do we even need RefreshToken() if we're using cookies?
@@ -69,7 +88,7 @@
         Use distributed cache like Redis.
         Add expiration timestamps to refresh tokens.
         <br />
-        <h4>NOTE [9]:</h4>
+        <h4>NOTE [9]: <span class="red">(WE DO NOT DO THAT!)</span></h4>
         using both Cookie Authentication and JWT (Bearer Token) Authentication in the same ASP.NET Core project is not only feasible, but also very wise and flexible in many scenarios.
         in this project, we use
         1) JWT Auth => for: /home/AllRolesBearer
@@ -79,5 +98,19 @@
         in your controller: return View(); // ❌ won't work properly with fetch
         Why not return a View with JWT?
         JWT works without cookies and doesn't integrate automatically into Razor view rendering or MVC routing. It's mainly used for API-style apps (e.g., React, Angular, Vue, or raw JS frontend).
+        <br/>
+        It referes to Api-Jwt button on the top-header
+        <br />
+        <h4>NOTE [11]:</h4>
+        Why You Might See Data with or <span class="red">Without credentials: 'include'</span> or even with <span class="red">fake jwtToken-bearer</span> (the function by the name of <span class="red">"JwtFetch" in _layout.cshtml</span>)
+        <ul>
+            <li>
+                If your authentication is based on cookies (like the refreshToken and accessToken cookies), and those cookies are set to be sent automatically by the browser, the browser will automatically include the cookies in subsequent requests to the same domain.
+            </li>
+            <li>
+                Credentials: 'include' is used to make sure cookies are sent for cross-origin requests <span class="red">(if your frontend and backend are on different domains)</span>, but for same-origin requests (same domain), cookies are included by default.
+            </li>
+        </ul>
+
 </div>
 </div>

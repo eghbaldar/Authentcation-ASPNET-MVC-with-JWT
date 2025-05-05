@@ -23,3 +23,6 @@ body {
 .cursorPointer{
     cursor:pointer;
 }
+.red{
+    color:red !important;
+}

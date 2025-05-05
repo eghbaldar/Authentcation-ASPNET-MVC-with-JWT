@@ -9,43 +9,49 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = JWT
 build_property.RootNamespace = JWT
-build_property.ProjectDir = D:\_PROJECT_\JWT\
+build_property.ProjectDir = C:\Users\IRANFILMPORT\Desktop\JWT\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = D:\_PROJECT_\JWT
+build_property.MSBuildProjectDirectory = C:\Users\IRANFILMPORT\Desktop\JWT
 build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
 
-[D:/_PROJECT_/JWT/Views/Auth/Login.cshtml]
+[C:/Users/IRANFILMPORT/Desktop/JWT/Views/Auth/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/_PROJECT_/JWT/Views/Home/AccessDenied.cshtml]
+[C:/Users/IRANFILMPORT/Desktop/JWT/Views/Home/AccessDenied.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBY2Nlc3NEZW5pZWQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/_PROJECT_/JWT/Views/Home/AdminPage.cshtml]
+[C:/Users/IRANFILMPORT/Desktop/JWT/Views/Home/AdminPage.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBZG1pblBhZ2UuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/_PROJECT_/JWT/Views/Home/AllRoles.cshtml]
+[C:/Users/IRANFILMPORT/Desktop/JWT/Views/Home/AllRoles.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBbGxSb2xlcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/_PROJECT_/JWT/Views/Home/Index.cshtml]
+[C:/Users/IRANFILMPORT/Desktop/JWT/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/_PROJECT_/JWT/Views/Home/Login.cshtml]
+[C:/Users/IRANFILMPORT/Desktop/JWT/Views/Home/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/_PROJECT_/JWT/Views/Home/UserPage.cshtml]
+[C:/Users/IRANFILMPORT/Desktop/JWT/Views/Home/UserPage.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxVc2VyUGFnZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/_PROJECT_/JWT/Views/Shared/_Layout.cshtml]
+[C:/Users/IRANFILMPORT/Desktop/JWT/Views/Home/_SecureView.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxfU2VjdXJlVmlldy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/IRANFILMPORT/Desktop/JWT/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-nq81ariukc

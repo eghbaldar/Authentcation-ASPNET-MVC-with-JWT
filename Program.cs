@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,54 +13,23 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// DataBaseServices
+// Database Services
 builder.Services.AddScoped<IDataBaseContext, DataBaseContext>();
 var ConStr = builder.Configuration.GetConnectionString("Localhost");
 builder.Services.AddEntityFrameworkSqlServer().AddDbContext<DataBaseContext>(x => x.UseSqlServer(ConStr));
 
-// Configure Authentication
-//NOTE: This binds your JwtSettings model with the values from appsettings.json, making it injectable via IOptions<JwtSettings>.
-//NOTE: By using builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));, you're binding the JwtSettings section of your configuration file (appsettings.json) to a strongly typed object (JwtSettings). This means that in your application, you can inject IOptions<JwtSettings> and access the values directly.
+// Configure JWT Settings
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
-//NOTE: our project is=> MVC App + API with JWT (Hybrid)
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
 
+// JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options => // for MVC or Razor Pages
-{
-    options.LoginPath = "/Auth/Login";
-    options.LogoutPath = "/Auth/Logout";
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-    options.SlidingExpiration = true;
-    options.Cookie.HttpOnly = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-    options.Cookie.SameSite = SameSiteMode.Strict;
-    options.Cookie.Name = "UserAuthCookie";
-    options.Cookie.MaxAge = TimeSpan.FromDays(7);
-    options.AccessDeniedPath = "/home/accessDenied"; // if logged in but no permission (roles)
-    options.Events = new CookieAuthenticationEvents
-    {
-        OnRedirectToLogin = context =>
-        {
-            // Return 401 for AJAX requests
-            if (context.Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-            {
-                context.Response.StatusCode = 401;
-                context.Response.Headers["WWW-Authenticate"] = "Bearer";
-                return Task.CompletedTask;
-            }
-            // Redirect for non-AJAX requests
-            context.Response.Redirect(context.RedirectUri);
-            return Task.CompletedTask;
-        }
-    };  
-})
-.AddJwtBearer(options => // for API calls
+.AddJwtBearer(options =>
 {
     options.RequireHttpsMetadata = false;
     options.SaveToken = true;
@@ -73,6 +43,8 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = jwtSettings.Issuer,
         ValidAudience = jwtSettings.Audience
     };
+
+    // Handle JWT Token from Cookie
     options.Events = new JwtBearerEvents
     {
         OnMessageReceived = context =>
@@ -83,19 +55,35 @@ builder.Services.AddAuthentication(options =>
                 context.Token = token;
             }
             return Task.CompletedTask;
+        },
+
+        // Redirect Unauthorized Access to AccessDenied page
+        OnChallenge = context =>
+        {
+            context.HandleResponse();
+            context.Response.Redirect("/Auth/Login?ReturnUrl=");
+            return Task.CompletedTask;
         }
     };
 });
 
+// Authorization Policies
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
     options.AddPolicy("User", policy => policy.RequireRole("User"));
 });
 
+// Cookie Authentication Settings
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.AccessDeniedPath = "/Home/AccessDenied";
+    options.LoginPath = "/Home/Login";
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -107,9 +95,27 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Handle 403/401 with redirection to custom page
+// if a user with a particular ROLE watns to enter to a page with another role protections, the user will be redirected!
+app.UseStatusCodePages(async context =>
+{
+    var response = context.HttpContext.Response;
+
+    if (response.StatusCode == 403 || response.StatusCode == 401)
+    {
+        response.Redirect("/Home/AccessDenied");
+    }
+});
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 
+
+
+
+
+// Custom Access Denied page
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

@@ -40,6 +40,9 @@
                         <li class="nav-item">
                             <a class="navbar-brand cursorPointer" onclick="runFunctionIsProtectedByJWT('/home/AllRolesBearer/')">AllRolesBearer</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="navbar-brand" onclick="JwtFetch()">Api-Jwt</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -61,5 +64,31 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/auth.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+             function JwtFetch() {
+
+            fetch("/home/GetProtectedData", {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ${jwtToken}',  // read the NOTE [11] on the HOME PAGE
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'  // read the NOTE [11] on the HOME PAGE
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert("Fetched data: " + JSON.stringify(data));
+            })
+            .catch(error => {
+                alert("Error during fetch: " + error);
+            });
+        }
+
+    </script>
 </body>
 </html>
